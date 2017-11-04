@@ -1,0 +1,401 @@
+/*
+Theme Name: WP Freelance
+Theme URI: https://geek.hellyer.kiwi/
+Author: Ryan Hellyer
+Author URI: https://geek.hellyer.kiwi/
+Description: invoicing theme
+Version: 1.0
+License: GNU General Public License
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+*/
+
+@font-face {
+	font-family: 'open-sans-light';
+	src: url('fonts/OpenSans-Light-webfont.eot');
+	src: url('fonts/OpenSans-Light-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/OpenSans-Light-webfont.woff') format('woff'),
+		 url('fonts/OpenSans-Light-webfont.ttf') format('truetype'),
+		 url('fonts/OpenSans-Light-webfont.svg#open_sanslight') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'open-sans-regular';
+	src: url('fonts/OpenSans-Regular-webfont.eot');
+	src: url('fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/OpenSans-Regular-webfont.woff') format('woff'),
+		 url('fonts/OpenSans-Regular-webfont.ttf') format('truetype'),
+		 url('fonts/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+
+}
+
+@font-face {
+	font-family: 'open-sans-bold';
+	src: url('fonts/OpenSans-Bold-webfont.eot');
+	src: url('fonts/OpenSans-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/OpenSans-Bold-webfont.woff') format('woff'),
+		 url('fonts/OpenSans-Bold-webfont.ttf') format('truetype'),
+		 url('fonts/OpenSans-Bold-webfont.svg#open_sansregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+
+}
+
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+html {
+	background: #fff;
+}
+
+body {
+	position: relative;
+	width: 800px;
+	margin: 0 auto;
+}
+
+a {
+	color: #d90000;
+	font-family: open-sans-bold, monospace;
+	text-decoration: none;	
+}
+
+/* Header area */
+header {
+	float: left;
+	width: 100%;
+}
+
+/* Header */
+header {
+	float: right;
+	width: 100%;
+}
+
+h1 {
+	font-family: open-sans-bold, monospace;
+	font-size: 30px;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: 6px;
+	margin: 5px 0 5px 75px;
+	line-height: 30px;
+}
+
+h1 span {
+	display: block;
+	font-family: open-sans-bold, monospace;
+	font-size: 16px;
+	line-height: 16px;
+	text-transform: uppercase;
+	letter-spacing: 4px;
+	margin: 0;
+}
+
+header > div {
+	float: right;
+	height: 60px;
+}
+
+header .block {
+	float: left;
+	width: 60px;
+	height: 60px;
+}
+
+.dark-colour {
+	width: 270px;
+	background: #d90000;
+}
+
+.dark-colour .block {
+	background: linear-gradient(to right top, #fff 50%, #d90000 50%);
+}
+
+.medium-colour {
+	width: 75px;
+	background: #ea0000;
+}
+
+.medium-colour .block {
+	background: linear-gradient(to right top, #d90000 50%, #ea0000 50%);
+}
+
+.light-colour {
+	width: 100px;
+	background: #fb0000;
+}
+
+.light-colour .block {
+	background: linear-gradient(to right top, #ea0000 50%, #fb0000 50%);
+}
+
+/* Invoice to */
+.box {
+	float: left;
+	width: 200px;
+	font-family: open-sans-regular, monospace;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.bank-details {
+	width: 400px;
+	margin: -40px 0 0 50px;
+}
+
+.note {
+	float: right;
+    margin: 20px 40px 0 0;
+}
+
+.invoice-no {
+	position: absolute;
+	top: 37px;
+	left: 50px;
+}
+
+.invoice-to {
+	margin: 45px 0 30px 50px;
+}
+
+.invoice-to-website {
+	display: block;
+	margin-top: 10px;
+}
+
+.invoice-from {
+	float: right;
+	margin: 30px 50px 0 50px;
+}
+
+.box em {
+	display: block;
+	font-family: open-sans-bold, monospace;
+	font-size: 12px;
+}
+
+.box strong {
+	display: block;
+	color: #d90000;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 5px 0 8px 0;
+	font-size: 18px;
+}
+
+.box strong.total-amount {
+	line-height: 45px;
+	font-size: 45px;
+}
+
+main {
+	display: block;
+	float: left;
+	width: 100%;
+}
+
+/* Payment table */
+table {
+	float: left;
+	width: 100%;
+	margin: 15px 0;
+	font-size: 12px;
+	color: #000;
+	border-collapse: collapse;
+}
+
+tr:nth-child(1),
+tr:nth-child(3),
+tr:nth-child(5),
+tr:nth-child(7),
+tr:nth-child(9),
+tr:nth-child(11),
+tr:nth-child(13),
+tr:nth-child(15),
+tr:nth-child(17),
+tr:nth-child(19),
+tr:nth-child(21),
+tr:nth-child(23),
+tr:nth-child(25),
+tr:nth-child(27),
+tr:nth-child(29),
+tr:nth-child(31),
+tr:nth-child(33),
+tr:nth-child(35),
+tr:nth-child(37),
+tr:nth-child(39),
+tr:nth-child(41),
+tr:nth-child(43),
+tr:nth-child(45),
+tr:nth-child(47),
+tr:nth-child(49),
+tr:nth-child(51),
+tr:nth-child(53),
+tr:nth-child(55),
+tr:nth-child(57),
+tr:nth-child(59) {
+	background-color: #dedede;
+}
+
+tr:nth-child(2),
+tr:nth-child(4),
+tr:nth-child(6),
+tr:nth-child(8),
+tr:nth-child(10),
+tr:nth-child(12),
+tr:nth-child(14),
+tr:nth-child(16),
+tr:nth-child(18),
+tr:nth-child(20),
+tr:nth-child(22),
+tr:nth-child(24),
+tr:nth-child(26),
+tr:nth-child(28),
+tr:nth-child(30),
+tr:nth-child(32),
+tr:nth-child(34),
+tr:nth-child(36),
+tr:nth-child(38),
+tr:nth-child(40),
+tr:nth-child(42),
+tr:nth-child(44),
+tr:nth-child(46),
+tr:nth-child(48),
+tr:nth-child(50),
+tr:nth-child(52),
+tr:nth-child(54),
+tr:nth-child(56),
+tr:nth-child(58),
+tr:nth-child(60) {
+	background-color: #efefef;
+}
+
+th,
+td {
+	text-align: left;
+}
+
+th {
+	background: #d90000;
+	color: #fff;
+	font-size: 14px;
+	font-family: open-sans-bold, monospace;
+	padding: 15px 20px;
+	text-align: center;
+}
+
+tfoot td:nth-child(1) {
+	background: #fff;
+}
+
+tfoot td {
+	text-transform: uppercase;
+	background: #d90000;
+	color: #fff;
+	text-align: center;
+	font-size: 14px;
+	font-family: open-sans-bold, monospace;
+}
+
+td {
+	padding: 11.5px 20px;
+	font-size: 12px;
+	font-family: open-sans-regular, monospace;
+	text-align: center;
+	vertical-align: middle;
+}
+
+
+th:nth-child(1),
+td:nth-child(1) {
+	width: 350px;
+	text-align: left;
+}
+
+td strong {
+	display: block;
+	font-family: open-sans-bold, monospace;
+}
+
+th:nth-child(1) {
+	background: #fb0000;	
+}
+
+th:nth-child(1),
+td:nth-child(1) {
+	padding-left: 50px;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+	padding-right: 50px;
+	text-align: center;
+}
+
+/* Footer */
+footer {
+	position: fixed;
+	bottom: 0;
+	clear: both;
+	display: block;
+	width: 800px;
+	background: #d90000;
+}
+	
+footer p {
+	color: #fff;
+	font-size: 12px;
+	font-family: open-sans-regular, monospace;
+}
+
+footer p:nth-child(1) {
+	float: left;
+	padding: 15px 0 15px 50px;
+}
+
+footer p:nth-child(2) {
+	float: right;
+	padding: 15px 50px 15px 0;
+	color: #fff;
+	font-size: 12px;
+	font-family: open-sans-regular, monospace;
+}
+
+
+/* Print margins */
+@page {
+	margin: 0;
+}
