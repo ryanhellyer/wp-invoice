@@ -14,6 +14,14 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 	 * Class constructor.
 	 */
 	public function __construct() {
+
+		// Get the invoice ID
+		if ( isset( $_GET['post'] ) ) {
+			$this->invoice_id = $_GET['post'];
+		} else {
+			$this->invoice_id = 0;
+		}
+
 		add_action( 'init',           array( $this, 'register_post_type' ) );
 
 		add_action( 'add_meta_boxes', array( $this, 'add_client_metabox' ) );
@@ -65,7 +73,24 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 	 */
 	public function client_meta_box() {
 
-		$current_client = get_post_meta( get_the_ID(), '_client', true );
+		$current_client = get_post_meta( $this->invoice_id, '_client', true );
+
+		$clients_query = new WP_Query(
+			array(
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'posts_per_page'         => 100,
+				'post_type'              => 'client',
+			)
+		);
+		$clients = array();
+		if ( $clients_query->have_posts() ) {
+			while ( $clients_query->have_posts() ) {
+				$clients_query->the_post();
+				$clients[get_the_ID()] = get_the_title( get_the_ID() );
+			}
+		}
 
 		?>
 
@@ -73,23 +98,6 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 			<label for="_client"><?php _e( 'Client', 'wp-invoice' ); ?></label>
 			<br />
 			<select name="_client" id="_client"><?php
-
-			$clients_query = new WP_Query(
-				array(
-					'no_found_rows'          => true,
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-					'posts_per_page'         => 100,
-					'post_type'              => 'client',
-				)
-			);
-			$clients = array();
-			if ( $clients_query->have_posts() ) {
-				while ( $clients_query->have_posts() ) {
-					$clients_query->the_post();
-					$clients[get_the_ID()] = get_the_title( get_the_ID() );
-				}
-			}
 
 			foreach ( $clients as $key => $client ) {
 				echo '<option ' . selected( $client, $current_client, false )  . ' value="' . esc_attr( $client ) . '">' . esc_html( $client ) . '</option>';
@@ -239,33 +247,79 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 	 */
 	public function invoice_to_meta_box() {
 
-		$invoice_to = get_post_meta( get_the_ID(), '_invoice_to', true );
-		$invoice_number = get_post_meta( get_the_ID(), '_invoice_number', true );
-		$invoice_details = get_post_meta( get_the_ID(), '_invoice_details', true );
-		$invoice_currency = get_post_meta( get_the_ID(), '_invoice_currency', true );
-		$invoice_due_date = date( self::DATE_FORMAT, absint( strtotime( get_post_meta( get_the_ID(), '_invoice_due_date', true ) ) ) );
-		$invoice_hourly_rate = get_post_meta( get_the_ID(), '_invoice_hourly_rate', true );
-		$invoice_note = get_post_meta( get_the_ID(), '_invoice_note', true );
-		$invoice_paid = get_post_meta( get_the_ID(), '_invoice_paid', true );
+		$meta_keys = array(
+			'to',
+			'number',
+			'details',
+			'currency',
+			'due_date',
+			'hourly_rate',
+			'note',
+			'paid',
+		);
+
+		$meta_data = array();
+		foreach ( $meta_keys as $meta_key ) {
+			$meta_data[ $meta_key ] = get_post_meta( $this->invoice_id, '_invoice_' . $meta_key, true );
+			$client = get_post_meta( $this->invoice_id, '_client', true );
+//delete_post_meta( $this->invoice_id, '_invoice_' . $meta_key );
+
+			if (
+				'' === $meta_data[ $meta_key ]
+				&&
+				'' !== $client
+			) {
+
+				$clients_query = new WP_Query(
+					array(
+						'posts_per_page'         => 1,
+						'no_found_rows'          => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
+						'fields'                 => 'ids',
+						'order'                  => 'DESC',
+						'orderby'                => 'date',
+						'post_type'              => 'invoice',
+						'meta_key'               => '_client',
+						'meta_value'             => $client,
+						'meta_compare'           => '==',
+					)
+				);
+				if ( $clients_query->have_posts() ) {
+					while ( $clients_query->have_posts() ) {
+						$clients_query->the_post();
+
+						if ( $this->invoice_id !== get_the_ID() ) {
+							$meta_data[ $meta_key ] = get_post_meta( get_the_ID(), '_invoice_' . $meta_key, true );
+						}
+
+					}
+
+				}
+
+			}
+
+
+		}
 
 		?>
 
 		<p>
 			<label for="_invoice_to"><?php _e( 'Invoice to', 'wp-invoice' ); ?></label>
 			<br />
-			<textarea name="_invoice_to" id="_invoice_to"><?php echo esc_textarea( $invoice_to ); ?></textarea>
+			<textarea name="_invoice_to" id="_invoice_to"><?php echo esc_textarea( $meta_data['to'] ); ?></textarea>
 		</p>
 
 		<p>
 			<label for="_invoice_number"><?php _e( 'Invoice number', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="number" name="_invoice_number" id="_invoice_number" value="<?php echo esc_attr( $invoice_number ); ?>" />
+			<input type="number" name="_invoice_number" id="_invoice_number" value="<?php echo esc_attr( $meta_data['number'] ); ?>" />
 		</p>
 
 		<p>
 			<label for="_invoice_details"><?php _e( 'Details', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="text" name="_invoice_details" id="_invoice_details" value="<?php echo esc_attr( $invoice_details ); ?>" />
+			<input type="text" name="_invoice_details" id="_invoice_details" value="<?php echo esc_attr( $meta_data['details'] ); ?>" />
 		</p>
 
 		<p>
@@ -280,7 +334,8 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 				'NZD',
 				'NOK',
 			);
-			$current_currency = get_post_meta( get_the_ID(), '_invoice_currency', true );
+			$current_currency = $meta_data['currency'];
+//			$current_currency = get_post_meta( get_the_ID(), '_invoice_currency', true );
 			foreach ( $currencies as $key => $currency ) {
 				echo '<option ' . selected( $currency, $current_currency, false )  . ' value="' . esc_attr( $currency ) . '">' . esc_html( $currency ) . '</option>';
 			}
@@ -291,25 +346,25 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 		<p>
 			<label for="_invoice_due_date"><?php _e( 'Due date', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="date" name="_invoice_due_date" id="_invoice_due_date" value="<?php echo esc_attr( $invoice_due_date ); ?>" />
+			<input type="date" name="_invoice_due_date" id="_invoice_due_date" value="<?php echo esc_attr( $meta_data['due_date'] ); ?>" />
 		</p>
  
 		<p>
 			<label for="_invoice_hourly_rate"><?php _e( 'Hourly rate ', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="number" name="_invoice_hourly_rate" id="_invoice_hourly_rate" value="<?php echo esc_attr( $invoice_hourly_rate ); ?>" />
+			<input type="number" name="_invoice_hourly_rate" id="_invoice_hourly_rate" value="<?php echo esc_attr( $meta_data['hourly_rate'] ); ?>" />
 		</p>
 
 		<p>
 			<label for="_invoice_note"><?php _e( 'Note', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="text" name="_invoice_note" id="_invoice_note" value="<?php echo esc_attr( $invoice_note ); ?>" />
+			<input type="text" name="_invoice_note" id="_invoice_note" value="<?php echo esc_attr( $meta_data['note'] ); ?>" />
 		</p>
 
 		<p>
 			<label for="_invoice_paid"><?php _e( 'Paid? ', 'wp-invoice' ); ?></label>
 			<br />
-			<input type="checkbox" <?php checked( $invoice_paid, true ); ?> name="_invoice_paid" id="_invoice_paid" value="1" />
+			<input type="checkbox" <?php checked( $meta_data['paid'], true ); ?> name="_invoice_paid" id="_invoice_paid" value="1" />
 		</p>
 
 		<input type="hidden" id="to-nonce" name="to-nonce" value="<?php echo esc_attr( wp_create_nonce( __FILE__ ) ); ?>">
@@ -360,7 +415,7 @@ class WP_Invoice_Invoice_Post_Type extends WP_Invoice_Core {
 		}
 
 		if ( isset( $_POST['_invoice_currency'] ) ) {
-$invoice_currency = wp_kses_post( $_POST['_invoice_currency'] );
+			$invoice_currency = wp_kses_post( $_POST['_invoice_currency'] );
 			update_post_meta( $post_id, '_invoice_currency', $invoice_currency );
 		}
 

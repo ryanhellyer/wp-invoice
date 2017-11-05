@@ -34,15 +34,4 @@ new WP_Invoice_Admin;
 new WP_Invoice_Setup;
 new WP_Invoice_User_Meta;
 new WP_Invoice_Cron;
-
-/*
-$start = strtotime( '2017-04-01' );
-$end = strtotime( '2017-04-31' );
-$user_id = 1;
-
-$toggl = new WP_Invoice_Toggl;
-$tasks = $toggl->get_entry_data( $user_id, $start, $end );
-
-print_r( $tasks );
-die;
-*/
+new WP_Invoice_Test;
