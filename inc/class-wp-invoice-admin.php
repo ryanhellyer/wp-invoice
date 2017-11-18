@@ -14,7 +14,7 @@ class WP_Invoice_Admin {
 	 * Adds all the methods to appropriate hooks
 	 */
 	public function __construct() {
-return;
+
 		// Add action hooks
 		add_action( 'admin_menu',                 array( $this, 'remove_menus' ) );
 		add_action( 'wp_before_admin_bar_render', array( $this, 'remove_admin_bar_links' ) );

@@ -31,7 +31,6 @@ new WP_Invoice_Invoice_Post_Type;
 new WP_Invoice_Client_Post_Type;
 new WP_Invoice_Taxonomies;
 new WP_Invoice_Admin;
-new WP_Invoice_Setup;
 new WP_Invoice_User_Meta;
 new WP_Invoice_Cron;
-new WP_Invoice_Test;
+new WP_Invoice_Theme_Loader;

@@ -1,4 +1,20 @@
-<!DOCTYPE html>
+<?php
+
+function get_invoice_data( $invoice_id ) {
+
+	$data = get_post_meta( $invoice_id, '_wp_invoice', true );
+	foreach ( $this->fields as $key => $x ) {
+		if ( ! isset( $data[ '_' . $key ] ) ) {
+			$data[ '_' . $key ] = '';
+		}			
+	}
+
+}
+$data = get_invoice_data( get_the_ID() );
+print_r( $data );
+die;
+
+?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />

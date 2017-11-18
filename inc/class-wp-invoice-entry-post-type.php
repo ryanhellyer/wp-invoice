@@ -16,87 +16,14 @@ class WP_Invoice_Entry_Post_Type extends WP_Invoice_Core {
 	public function __construct() {
 		add_action( 'init',           array( $this, 'register_post_type' ) );
 
+		// Time meta box
 		add_action( 'add_meta_boxes', array( $this, 'add_time_metabox' ) );
 		add_action( 'save_post',      array( $this, 'meta_time_save' ), 10, 2 );
 
+		// Client meta box
 		add_action( 'add_meta_boxes', array( $this, 'add_client_metabox' ) );
 
-if ( isset( $_GET['import_entries'] ) ) {
-		add_action( 'init', array( $this, 'add_entries_from_toggl' ) );
-}
 	}
-
-	/**
-	 ** Add entries from Toggle.
-	 */
-	public function add_entries_from_toggl() {
-return;
-$start_date = '2017-04-01';
-$end_date = '2017-04-31';
-$start = strtotime( $start_date );
-$end = strtotime( $end_date );
-$user_id = $_GET['import_entries'];
-$user_info = get_userdata(1);
-$username = $user_info->user_login;
-
-wp_set_post_terms( 256, 'xxx', 'task' );
-return;
-
-		$toggl = new WP_Invoice_Toggl;
-		$tasks = $toggl->get_entry_data( $user_id, $start, $end );
-
-		foreach ( $tasks as $key => $task ) {
-			$title = $username . ': ' . $end_date . ' - ' . wp_strip_all_tags( $task['description'] );
-
-			// Add entry post
-			$entry_post = get_page_by_title( $title, OBJECT, 'entry' );
-
-			if ( empty( $entry_post ) ) {
-
-				$args = array(
-					'post_title'  => $title,
-					'post_status' => 'publish',
-					'post_author' => $user_id,
-					'post_date'   => date( 'Y-m-d\TH:i:s', $end ),
-					'post_type'   => 'entry',
-				);
-				$entry_id = wp_insert_post( $args );
-
-				update_post_meta( $entry_id, '_start_date', $end );
-
-				wp_set_post_terms( $entry_id, $task['project'], 'task' );
-/*
-				wp_insert_term(
-					wp_strip_all_tags( $task['description'] ), // the term 
-					'task', // the taxonomy
-					array(
-						'description'=> wp_strip_all_tags( $task['description'] ),
-						'slug'       => sanitize_title( $task['description'] ),
-					)
-				);
-*/
-			}
-
-			// Add client post
-			$client_post = get_page_by_title( $task['client'], OBJECT, 'client' );
-			if ( empty( $client_post ) ) {
-
-				$args = array(
-					'post_title'  => wp_strip_all_tags( $task['client'] ),
-					'post_status' => 'publish',
-					'post_author' => $user_id,
-					'post_type'   => 'client',
-				);
-				$client_id = wp_insert_post( $args );
-
-				wp_set_post_terms( $client_id, $task['project'], 'task' );
-			}
-
-		}
-
-		print_r( $tasks );die;
-	}
-
 
 	/**
 	 ** Register post-type.

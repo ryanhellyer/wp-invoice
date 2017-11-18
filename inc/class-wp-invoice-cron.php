@@ -5,7 +5,7 @@
  */
 class WP_Invoice_Cron extends WP_Invoice_Core {
 
-	const TIME_BEFORE_UPDATING_TOGGL_DATA = WEEK_IN_SECONDS;
+	const TIME_BEFORE_UPDATING_TOGGL_DATA = 60;//WEEK_IN_SECONDS;
 
 	/**
 	 * Class constructor.

@@ -1,3 +1,1 @@
-<?php
-
-new WP_Invoice_Theme_Loader;
+This shouldn't load!
